@@ -25,7 +25,11 @@ const getBaseUrl = (): string => {
 
 export const fetchThemes = async (): Promise<BlogTheme[]> => {
   const baseUrl = getBaseUrl();
-  const response = await fetch(`${baseUrl}?action=getAll`);
+  
+  const response = await fetch(`${baseUrl}?action=getAll`, {
+    method: 'GET',
+    redirect: 'follow',
+  });
   
   if (!response.ok) {
     throw new Error('Erro ao buscar temas');
@@ -33,7 +37,7 @@ export const fetchThemes = async (): Promise<BlogTheme[]> => {
   
   const data = await response.json();
   return data.map((row: string[], index: number) => ({
-    id: index + 2, // Row number in spreadsheet (starting from 2, after header)
+    id: index + 2,
     dataHorario: row[0] || '',
     tituloTema: row[1] || '',
     descricaoTema: row[2] || '',
@@ -46,18 +50,17 @@ export const createTheme = async (data: ThemeFormData): Promise<void> => {
   const now = new Date();
   const dataHorario = now.toLocaleString('pt-BR');
   
-  const response = await fetch(baseUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      action: 'create',
-      dataHorario,
-      tituloTema: data.tituloTema,
-      descricaoTema: data.descricaoTema,
-      feito: data.feito,
-    }),
+  const params = new URLSearchParams({
+    action: 'create',
+    dataHorario,
+    tituloTema: data.tituloTema,
+    descricaoTema: data.descricaoTema,
+    feito: data.feito,
+  });
+
+  const response = await fetch(`${baseUrl}?${params.toString()}`, {
+    method: 'GET',
+    redirect: 'follow',
   });
 
   if (!response.ok) {
@@ -68,18 +71,17 @@ export const createTheme = async (data: ThemeFormData): Promise<void> => {
 export const updateTheme = async (id: number, data: ThemeFormData): Promise<void> => {
   const baseUrl = getBaseUrl();
   
-  const response = await fetch(baseUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      action: 'update',
-      rowIndex: id,
-      tituloTema: data.tituloTema,
-      descricaoTema: data.descricaoTema,
-      feito: data.feito,
-    }),
+  const params = new URLSearchParams({
+    action: 'update',
+    rowIndex: id.toString(),
+    tituloTema: data.tituloTema,
+    descricaoTema: data.descricaoTema,
+    feito: data.feito,
+  });
+
+  const response = await fetch(`${baseUrl}?${params.toString()}`, {
+    method: 'GET',
+    redirect: 'follow',
   });
 
   if (!response.ok) {
@@ -90,15 +92,14 @@ export const updateTheme = async (id: number, data: ThemeFormData): Promise<void
 export const deleteTheme = async (id: number): Promise<void> => {
   const baseUrl = getBaseUrl();
   
-  const response = await fetch(baseUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      action: 'delete',
-      rowIndex: id,
-    }),
+  const params = new URLSearchParams({
+    action: 'delete',
+    rowIndex: id.toString(),
+  });
+
+  const response = await fetch(`${baseUrl}?${params.toString()}`, {
+    method: 'GET',
+    redirect: 'follow',
   });
 
   if (!response.ok) {
