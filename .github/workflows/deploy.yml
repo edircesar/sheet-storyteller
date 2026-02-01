@@ -20,7 +20,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: npm run build
@@ -51,6 +51,6 @@ jobs:
           dry-run: false
           log-level: verbose
           exclude: |
-            **/.git*
-            **/.github/**
-            **/node_modules/**
+            */.git
+            */.github/*
+            */node_modules/*
