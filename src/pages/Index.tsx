@@ -70,7 +70,7 @@ const Index = () => {
         <div className="container mx-auto flex flex-col gap-4 px-4 py-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <FileText className="h-8 w-8" />
-            <h1 className="text-2xl font-bold tracking-tight">Blog Themes Manager</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Gerenciar Artigos para o Blog</h1>
           </div>
           <ConfigModal onConfigChange={handleConfigChange} />
         </div>
