@@ -6,10 +6,17 @@ import { ThemeFormModal } from '@/components/ThemeFormModal';
 import { StatusChart } from '@/components/StatusChart';
 import { ThemesTable } from '@/components/ThemesTable';
 import { BlogTheme } from '@/types/theme';
-import { fetchThemes, getConfig } from '@/services/googleSheets';
+import { fetchThemes, getConfig, applyUrlConfig } from '@/services/googleSheets';
 import { toast } from 'sonner';
 
 const Index = () => {
+  // Apply config from URL on first load
+  useEffect(() => {
+    const appliedFromUrl = applyUrlConfig();
+    if (appliedFromUrl) {
+      toast.success('Configuração carregada da URL!');
+    }
+  }, []);
   const [themes, setThemes] = useState<BlogTheme[]>([]);
   const [loading, setLoading] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
