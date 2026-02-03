@@ -34,6 +34,32 @@ export const removeUrlFromHistory = (url: string): void => {
   localStorage.setItem(URL_HISTORY_KEY, JSON.stringify(filtered));
 };
 
+// Check URL parameter for config
+export const getConfigFromUrl = (): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('config');
+};
+
+// Apply config from URL if present (called on app init)
+export const applyUrlConfig = (): boolean => {
+  const urlConfig = getConfigFromUrl();
+  if (urlConfig) {
+    saveConfig({ webAppUrl: urlConfig });
+    return true;
+  }
+  return false;
+};
+
+// Generate shareable URL with current config
+export const getShareableUrl = (): string | null => {
+  const config = getConfig();
+  if (!config?.webAppUrl) return null;
+  
+  const baseUrl = window.location.origin + window.location.pathname;
+  const params = new URLSearchParams({ config: config.webAppUrl });
+  return `${baseUrl}?${params.toString()}`;
+};
+
 export const getConfig = (): GoogleSheetsConfig | null => {
   const stored = localStorage.getItem(CONFIG_KEY);
   return stored ? JSON.parse(stored) : null;

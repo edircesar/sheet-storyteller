@@ -3,8 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Settings, Trash2, History } from 'lucide-react';
-import { getConfig, saveConfig, clearConfig, getUrlHistory, removeUrlFromHistory, UrlHistoryEntry } from '@/services/googleSheets';
+import { Settings, Trash2, History, Share2, Copy } from 'lucide-react';
+import { getConfig, saveConfig, clearConfig, getUrlHistory, removeUrlFromHistory, getShareableUrl, UrlHistoryEntry } from '@/services/googleSheets';
 import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -56,6 +56,16 @@ export function ConfigModal({ onConfigChange }: ConfigModalProps) {
     removeUrlFromHistory(url);
     setUrlHistory(getUrlHistory());
     toast.success('URL removida do histórico');
+  };
+
+  const handleCopyShareableUrl = () => {
+    const shareableUrl = getShareableUrl();
+    if (shareableUrl) {
+      navigator.clipboard.writeText(shareableUrl);
+      toast.success('Link copiado! Compartilhe para acessar de outros dispositivos.');
+    } else {
+      toast.error('Salve uma URL primeiro');
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -140,6 +150,28 @@ export function ConfigModal({ onConfigChange }: ConfigModalProps) {
               <p className="text-xs text-muted-foreground">
                 Clique em uma URL para selecioná-la. A última URL usada é carregada automaticamente.
               </p>
+            </div>
+          )}
+
+          {/* Shareable URL Section */}
+          {existingConfig && (
+            <div className="rounded-md border-2 border-border bg-muted/50 p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Share2 className="h-4 w-4 text-muted-foreground" />
+                <Label className="font-medium text-sm">Compartilhar configuração</Label>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                Use este link para acessar o sistema com a mesma planilha em outros dispositivos.
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleCopyShareableUrl}
+                className="w-full gap-2"
+              >
+                <Copy className="h-4 w-4" />
+                Copiar link compartilhável
+              </Button>
             </div>
           )}
 
